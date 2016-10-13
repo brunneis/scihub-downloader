@@ -56,7 +56,7 @@ VOLUME ["/data"]
 # Scripts
 COPY init.sh /
 COPY download.py /
-RUN chmod +x /init.sh
+RUN chmod +x /init.sh /download.py
 
 # The container launches Privoxy, Httpd and Tor
 CMD /init.sh
