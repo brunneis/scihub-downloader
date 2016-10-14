@@ -21,6 +21,8 @@ import urllib
 import requests
 import sys
 from bs4 import BeautifulSoup
+import magic
+import os
 
 # Headers
 user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
@@ -86,6 +88,11 @@ if not hasattr(file_iframe, 'src'):
     sys.exit()
 
 # File write
-f = open('/data/' + query.replace('/', '_').replace(' ', '_') + '.pdf', 'wb')
-f.write(tor_get('http:' + file_iframe['src']))
+file_path = '/data/' + query.replace('/', '_').replace(' ', '_') + '.pdf'
+f = open(file_path, 'wb')
+f.write(tor_get(file_iframe['src']))
 f.close()
+
+if magic.from_file(file_path, mime=True) != 'application/pdf':    
+    print "Error retrieving the file (captcha?). Please, try again."
+    os.remove(file_path)

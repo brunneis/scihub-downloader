@@ -44,7 +44,13 @@ RUN \
 		python-devel \
 		python-pip \
 	&& git clone https://github.com/aaronsw/pytorctl.git \
-	&& pip install pytorctl/ beautifulsoup4 requests \
+	&& git clone https://github.com/ahupp/python-magic.git \
+	&& pip install \
+		pytorctl/ \
+		python-magic/ \
+		beautifulsoup4 \
+		requests \
+		libmagic \
 	&& echo "forward-socks5 / localhost:9050 ." >> /etc/privoxy/config \
 	&& rm -f /etc/httpd/conf.d/welcome.conf \
 	&& rm -rf /var/www/html \
