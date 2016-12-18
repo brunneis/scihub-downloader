@@ -35,7 +35,7 @@ RUN \
 		git \
 		httpd \
 	&& yum clean all \
-	&& wget $EPEL_URL \
+	&& wget $EPEL_URL --no-check-certificate \
 	&& rpm -i $EPEL_RPM \
 	&& rm -f $EPEL_RPM \
 	&& yum -y install \
