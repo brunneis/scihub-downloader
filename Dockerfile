@@ -20,7 +20,7 @@ MAINTAINER "Rodrigo Martínez" <dev@brunneis.com>
 ################################################
 
 ENV EPEL_RPM epel-release-latest-7.noarch.rpm
-ENV EPEL_URL https://download-ib01.fedoraproject.org/pub/epel/$EPEL_RPM
+ENV EPEL_URL https://dl.fedoraproject.org/pub/epel/$EPEL_RPM
 
 # UTF-8 locale
 RUN localedef -c -f UTF-8 -i en_US en_US.UTF-8
