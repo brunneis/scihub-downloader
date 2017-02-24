@@ -13,10 +13,10 @@ I am not responsible for the illegitimate use of this tool. E.g. the download of
 
 ## Run the container
 ### Local build
-`docker run -id --name scihub-downloader -p 80:80 -v /local_shared_dir:/data scihub-downloader`
+`docker run -id --name scihub-downloader -p 80:80 -v /local_shared_dir:/data:Z scihub-downloader`
 
 ### Docker Hub
-`docker run -id --name scihub-downloader -p 80:80 -v /local_shared_dir:/data brunneis/scihub-downloader`
+`docker run -id --name scihub-downloader -p 80:80 -v /local_shared_dir:/data:Z brunneis/scihub-downloader`
 
 > It takes a while to be connected to the Tor network, so it's advisable waiting a minute or two before starting to download files.
 
