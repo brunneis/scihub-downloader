@@ -1,5 +1,5 @@
 # scihub-downloader
-This container allows to download PDF files from Sci-Hub onion site (Tor Network) indicating a DOI.
+This container allows to download PDF files from Sci-Hub onion site (through Tor Network) indicating a DOI.
 
 ### Disclaimer
 I am not responsible for the illegitimate use of this tool. E.g. the download of non-open-access papers or even those if this method is not allowed by the editors.
@@ -13,16 +13,16 @@ I am not responsible for the illegitimate use of this tool. E.g. the download of
 
 ## Run the container
 ### Local build
-`docker run -id --name scihub-downloader -p 80:80 -v /local_shared_dir:/data:Z scihub-downloader`
+`docker run -id --name scihub-downloader -p 80:80 -v $(pwd)/local_shared_dir:/var/www/html:Z scihub-downloader`
 
 ### Docker Hub
-`docker run -id --name scihub-downloader -p 80:80 -v /local_shared_dir:/data:Z brunneis/scihub-downloader`
+`docker run -id --name scihub-downloader -p 80:80 -v $(pwd)/local_shared_dir:/var/www/html:Z brunneis/scihub-downloader`
 
-> It takes a while to be connected to the Tor network, so it's advisable waiting a minute or two before starting to download files.
+> It takes a while to be connected to the Tor network, so it's advisable waiting a minute before starting to download files.
 
 ## Download files
-The DOI is [`10.1109/ACCESS.2016.2529723`](http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=7406686) in the following example:
+The DOI is [`110.1000/xyz123`] in the following execution example (not valid):
 
-`docker exec scihub-downloader /download.py "10.1109/ACCESS.2016.2529723"`
+`docker exec scihub-downloader /download.py "10.1000/xyz123"`
 
-> The PDFs are stored in the local directory mapped to `/data`. The downloaded files are also accessible through a web server at [localhost](http://localhost/).
+> The PDFs are stored under the `/var/www/html` directory. The downloaded files are also accessible through a web server on the port 80 by default: [localhost](http://localhost/).

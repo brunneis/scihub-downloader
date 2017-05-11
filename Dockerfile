@@ -1,5 +1,5 @@
 # Sci-Hub PDF downloader through Tor Network
-# Copyright (C) 2016 Rodrigo Martínez <dev@brunneis.com>
+# Copyright (C) 2017 Rodrigo Martínez <dev@brunneis.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM centos:7.2.1511
+FROM centos:7.3.1611
 MAINTAINER "Rodrigo Martínez" <dev@brunneis.com>
 
 ################################################
@@ -22,47 +22,41 @@ MAINTAINER "Rodrigo Martínez" <dev@brunneis.com>
 ENV EPEL_RPM epel-release-latest-7.noarch.rpm
 ENV EPEL_URL https://dl.fedoraproject.org/pub/epel/$EPEL_RPM
 
-# UTF-8 locale
-RUN localedef -c -f UTF-8 -i en_US en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en  
-ENV LC_ALL en_US.UTF-8  
-
 RUN \
-	yum -y update \
-	&& yum -y install \
-		wget \
-		git \
-		httpd \
-	&& yum clean all \
-	&& wget $EPEL_URL --no-check-certificate \
-	&& rpm -i $EPEL_RPM \
-	&& rm -f $EPEL_RPM \
-	&& yum -y install \
-		tor \
-		privoxy \
-		python-devel \
-		python-pip \
-	&& git clone https://github.com/aaronsw/pytorctl.git \
-	&& git clone https://github.com/ahupp/python-magic.git \
-	&& pip install \
-		pytorctl/ \
-		python-magic/ \
-		beautifulsoup4 \
-		requests \
-		libmagic \
-	&& echo "forward-socks5 / localhost:9050 ." >> /etc/privoxy/config \
-	&& rm -f /etc/httpd/conf.d/welcome.conf \
-	&& rm -rf /var/www/html \
-	&& ln -s /data /var/www/html
+yum -y update \
+&& yum -y install \
+	wget \
+	git \
+	httpd \
+&& yum clean all \
+&& wget $EPEL_URL --no-check-certificate \
+&& rpm -i $EPEL_RPM \
+&& rm -f $EPEL_RPM \
+&& yum -y install \
+	tor \
+	privoxy \
+	python-devel \
+	python-pip \
+&& pip install --upgrade pip \
+&& git clone https://github.com/aaronsw/pytorctl.git \
+&& pip install \
+	pytorctl/ \
+	python-magic \
+	beautifulsoup4 \
+	requests \
+	libmagic \
+&& echo "forward-socks5 / localhost:9050 ." >> /etc/privoxy/config \
+&& rm -f /etc/httpd/conf.d/welcome.conf
 
 # Data volume
-VOLUME ["/data"]
+VOLUME ["/var/www/html"]
+ENV VOLUME /var/www/html
 
 # Scripts
 COPY init.sh /
 COPY download.py /
-RUN chmod +x /init.sh /download.py
+RUN chmod u+x /init.sh /download.py \
+&& chmod +w $VOLUME
 
 # The container launches Privoxy, Httpd and Tor
-CMD /init.sh
+ENTRYPOINT ["/init.sh"]

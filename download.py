@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Sci-Hub PDF downloader through Tor Network
-# Copyright (C) 2016 Rodrigo Martínez <dev@brunneis.com>
+# Copyright (C) 2017 Rodrigo Martínez <dev@brunneis.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,13 +23,15 @@ import sys
 from bs4 import BeautifulSoup
 import magic
 import os
+import re
+
 
 # Headers
-user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
-headers={'User-Agent':user_agent}
+user_agent = 'Mozilla/5.0 (scihub-downloader; v0.2)'
+headers={'User-Agent': user_agent}
 
 # Proxy handler
-proxy_support = urllib2.ProxyHandler({"http" : "127.0.0.1:8118"})
+proxy_support = urllib2.ProxyHandler({"http": "127.0.0.1:8118"})
 
 def tor_get(url):
     # Opener instance
@@ -50,7 +52,7 @@ def tor_post(url, data):
     # Request
     encoded_data = urllib.urlencode(data)
     request = urllib2.Request(url, data=encoded_data)
-    request.add_header("Content-Type",'application/x-www-form-urlencoded')
+    request.add_header("Content-Type", 'application/x-www-form-urlencoded')
 
     # Overwrite get method
     request.get_method = lambda: method
@@ -70,29 +72,44 @@ url = 'http://scihub22266oqcxt.onion/'
 
 # Query
 if len(sys.argv) < 2:
-	print "The DOI parameter is missing."
+	sys.stderr.write("The DOI parameter is missing.")
 	sys.exit()
-	
+
 # DOI argument
 query = sys.argv[1]
 
 response = tor_post(url, {'request': query})
-if response == -1:
-    print "Error processing the request."
+if not response:
+    sys.stderr.write("Error processing the request.")
     sys.exit()
 
 html = BeautifulSoup(response, 'html.parser')
 file_iframe = html.find('iframe', id='pdf')
 if not hasattr(file_iframe, 'src'):
-    print "Error retrieving the file (may not be available)."
+    sys.stderr.write("Error retrieving the file (may not be available).")
     sys.exit()
 
 # File write
-file_path = '/data/' + query.replace('/', '_').replace(' ', '_') + '.pdf'
-f = open(file_path, 'wb')
-f.write(tor_get(file_iframe['src']))
-f.close()
+file_path = os.environ['VOLUME'] \
+    + '/' + query.replace('/', '_').replace(' ', '_') + '.pdf'
 
-if magic.from_file(file_path, mime=True) != 'application/pdf':    
-    print "Error retrieving the file (captcha?). Please, try again."
+error = False
+with open(file_path, 'wb') as pdf:
+    pdf_src = file_iframe['src']
+    pattern = re.compile('^http:.+')
+    if not pattern.match(pdf_src):
+        pdf_src = 'http:' + pdf_src
+    try:
+        pdf.write(tor_get(pdf_src))
+    except:
+        sys.stderr.write("Could not retrieve the file (not available?).")
+        error = True
+
+if magic.from_file(file_path, mime=True) != 'application/pdf':
+    sys.stderr.write("Error retrieving the file (captcha?). Please, try again.")
+    error = True
+
+if error:
     os.remove(file_path)
+else:
+    os.chmod(file_path, 0o666)
