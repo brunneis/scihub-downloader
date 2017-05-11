@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+chmod 777 $VOLUME
 /usr/sbin/privoxy --user privoxy /etc/privoxy/config
 /usr/sbin/httpd
 su -s /bin/bash -c "tor" toranon
