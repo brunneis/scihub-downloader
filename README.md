@@ -1,8 +1,16 @@
-# scihub-downloader
+<h1 align="center">
+<b>Sci-Hub Downloader</b>
+</h1>
+
+<p align="center">
+    <a href="https://www.buymeacoffee.com/brunneis" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="35px"></a>
+</p>
+<br>
+
 This container allows to download PDF files from Sci-Hub onion site (through Tor Network) indicating a DOI.
 
 ### Disclaimer
-I am not responsible for the illegitimate use of this tool. E.g. the download of non-open-access papers or even those if this method is not allowed by the editors.
+I am not responsible for the illegitimate use of this tool. E.g., the download of non-open-access papers or even those if this method is not allowed by the editors.
 
 ## Getting the image
 ### Local build
