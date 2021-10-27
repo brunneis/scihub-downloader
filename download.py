@@ -69,7 +69,7 @@ def tor_post(url, data):
 
 # URL
 # url = 'http://scihub22266oqcxt.onion'
-url = 'http://sci-hub.tw'
+url = 'http://sci-hub.ru'
 
 # Query
 if len(sys.argv) < 2:
